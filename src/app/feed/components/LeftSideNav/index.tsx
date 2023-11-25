@@ -1,12 +1,10 @@
-import getCurrentUser from '@/app/actions/getCurrentUser';
 import { BlogOutlineIcon } from '@/app/components/Icons';
-import Image from 'next/image';
 import React from 'react';
 import VideoIcon from './icons/VideoIcon';
 import Avatar from '@/app/components/Avatar';
+import { UserInterface } from '@/app/interfaces';
 
-const LeftSideNav = async () => {
-  const currentUser = await getCurrentUser();
+const LeftSideNav = ({ currentUser }: { currentUser: UserInterface }) => {
   return (
     <section className='h-auto border-r border-solid border-[#E5E5E5] col-span-2 flex flex-col'>
       <div className='flex-1 flex flex-col mt-4 gap-y-6'>

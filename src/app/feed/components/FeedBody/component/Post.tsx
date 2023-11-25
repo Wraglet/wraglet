@@ -3,7 +3,7 @@
 import Avatar from '@/app/components/Avatar';
 import Button from '@/app/components/Button';
 import { ShareIcon } from '@/app/components/Icons';
-import { PostInterface } from '@/app/interfaces/post';
+import { PostInterface } from '@/app/interfaces';
 import arrGenerator from '@/app/utils/arrGenerator';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';

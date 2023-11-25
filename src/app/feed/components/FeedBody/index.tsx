@@ -3,7 +3,7 @@ import getCurrentUser from '@/app/actions/getCurrentUser';
 import CreatePost from './component/CreatePost';
 import getPosts from '@/app/actions/getPosts';
 import Post from './component/Post';
-import { PostInterface } from '@/app/interfaces/post';
+import { PostInterface } from '@/app/interfaces';
 
 const FeedBody = async () => {
   const currentUser = await getCurrentUser();

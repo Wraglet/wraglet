@@ -3,7 +3,7 @@ import { authOptions } from '@/app/utils/authOptions';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 
-export default async function POST(
+export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {

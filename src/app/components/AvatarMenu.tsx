@@ -3,7 +3,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-import React, { Fragment } from 'react';
+import React, { FC, Fragment } from 'react';
 import { FaCircleUser, FaRegCircleUser } from 'react-icons/fa6';
 import {
   HiCog,
@@ -11,12 +11,13 @@ import {
   HiArrowRightOnRectangle,
   HiOutlineArrowRightOnRectangle
 } from 'react-icons/hi2';
+import { UserInterface } from '../interfaces';
 
-interface AvatarMenuProps {
-  firstName: string | undefined;
+interface AvatarMenuInterface {
+  currentUser: UserInterface;
 }
 
-const AvatarMenu = ({ firstName }: AvatarMenuProps) => {
+const AvatarMenu: FC<AvatarMenuInterface> = ({ currentUser }) => {
   return (
     <Menu as='li' className='inline-flex'>
       <Menu.Button className='relative h-9 w-9 cursor-pointer border border-solid border-white rounded-full'>
@@ -53,7 +54,7 @@ const AvatarMenu = ({ firstName }: AvatarMenuProps) => {
                       aria-hidden='true'
                     />
                   )}
-                  {firstName}
+                  {currentUser.firstName}
                 </button>
               )}
             </Menu.Item>
