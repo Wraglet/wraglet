@@ -1,6 +1,7 @@
 import getCurrentUser from '@/app/actions/getCurrentUser';
 import { NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
+import { pusherServer } from '@/app/libs/pusher';
 
 export const POST = async (request: Request) => {
   try {
@@ -23,6 +24,8 @@ export const POST = async (request: Request) => {
         }
       }
     });
+
+    await pusherServer.trigger(currentUser.email, 'post:new', newPost);
 
     return NextResponse.json(newPost);
   } catch (err) {

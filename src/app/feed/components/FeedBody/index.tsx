@@ -9,7 +9,6 @@ const FeedBody = async () => {
   const currentUser = await getCurrentUser();
 
   const getPublicPosts: PostInterface[] = await getPosts();
-
   return (
     <section className='col-span-5 h-auto flex flex-col mt-6 w-full gap-y-4'>
       <CreatePost currentUser={currentUser} />
