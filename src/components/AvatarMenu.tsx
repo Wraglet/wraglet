@@ -27,12 +27,7 @@ const AvatarMenu = () => {
         <Avatar
           gender={user?.gender}
           size='h-8 w-8'
-          src={
-            user?.profilePicture?.url ||
-            (user?.gender === 'Female'
-              ? '/images/placeholder/male-placeholder.png'
-              : '/images/placeholder/male-placeholder.png')
-          }
+          src={user?.profilePicture?.url}
           alt={'Avatar'}
         />
       </Menu.Button>

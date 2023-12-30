@@ -1,10 +1,9 @@
 'use client';
 
 import { BlogOutlineIcon } from '@/components/Icons';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import VideoIcon from './icons/VideoIcon';
 import Avatar from '@/components/Avatar';
-import { useDimensions } from '@/utils/useDimension';
 import { useAppSelector } from '@/libs/redux/hooks';
 import { RootState } from '@/libs/redux/store';
 import Link from 'next/link';
@@ -12,10 +11,6 @@ import Link from 'next/link';
 const LeftSideNav = () => {
   const { user } = useAppSelector((state: RootState) => state.userState);
   const [hydrated, setHydrated] = useState(false);
-
-  const ref = useRef(null);
-
-  const { width, left, right } = useDimensions(ref);
 
   useEffect(() => {
     // This forces a rerender, so the date is rendered
@@ -28,10 +23,7 @@ const LeftSideNav = () => {
   }
 
   return (
-    <section
-      ref={ref}
-      className='hidden lg:block xl:w-[360px] lg:w-[280px] relative h-[calc(100vh-56px)]'
-    >
+    <section className='hidden lg:block xl:w-[360px] lg:w-[280px] relative h-[calc(100vh-56px)]'>
       <div
         className={`bottom-0 3xl:left-auto fixed top-14 overflow-y-auto lg:left-0  flex flex-col h-[calc(100vh-56px)] ml-4 3xl:ml-auto 2xl:w-[360px] lg:w-[280px]`}
       >
