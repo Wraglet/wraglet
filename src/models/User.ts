@@ -22,7 +22,26 @@ export interface UserDocument extends Document {
   };
   publicProfileVisible: boolean;
   friendRequests: string;
-  friends: string[];
+  followers: [
+    {
+      userId: string;
+      createdAt: Date;
+    }
+  ];
+  following: [
+    {
+      userId: string;
+
+      createdAt: Date;
+    }
+  ];
+  friends: [
+    {
+      userId: string;
+      relationship: string;
+      createdAt: Date;
+    }
+  ];
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -43,7 +62,22 @@ const UserSchema = new Schema<UserDocument>(
     coverPhoto: { type: Object, url: String, key: String },
     publicProfileVisible: { type: Boolean, default: true },
     friendRequests: String,
-    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Friendship' }]
+    followers: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+      }
+    ],
+    following: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+      }
+    ],
+    friends: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        relationship: String
+      }
+    ]
   },
   { timestamps: true }
 );

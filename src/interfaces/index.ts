@@ -8,31 +8,18 @@ export interface PostInterface {
     }>;
   };
   audience: string;
-  createdAt: Date;
-  updatedAt?: Date;
   author: AuthorInterface;
-  comments?: CommentInterface[];
-  reactions?: ReactionInterface[];
+  reactions?: PostReactionInterface[];
   upvotes: number;
   downvotes: number;
   votes: PostVoteInterface[];
-}
-
-export interface CommentInterface {
-  _id: string;
-  content: string;
   createdAt: Date;
   updatedAt?: Date;
-  authorId: string | undefined;
-  postId: string;
-  reactions?: ReactionInterface[];
 }
 
-export interface ReactionInterface {
-  _id: string;
+export interface PostReactionInterface {
   type: string;
   userId: string;
-  postId: string;
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -81,8 +68,6 @@ export interface AuthorInterface {
 }
 
 export interface PostVoteInterface {
-  _id: string;
-  postId: string;
   userId: string;
   voteType: 'upvote' | 'downvote';
   createdAt: Date;

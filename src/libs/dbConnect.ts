@@ -1,10 +1,4 @@
 import mongoose from 'mongoose';
-import '@/models/User';
-import '@/models/Post';
-import '@/models/Comment';
-import '@/models/Reaction';
-import '@/models/PostVote';
-import '@/models/Friendship';
 
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
@@ -33,9 +27,6 @@ async function dbConnect() {
       bufferCommands: false
     };
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      mongoose.modelNames().forEach((modelName) => {
-        console.log(`Model registered: ${modelName}`);
-      });
       return mongoose;
     });
   }

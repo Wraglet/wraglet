@@ -23,7 +23,6 @@ const getPostsByUsername = async (
         select:
           'firstName lastName username gender pronoun profilePicture coverPhoto'
       })
-      .populate('comments reactions')
       .exec();
 
     return userPosts;

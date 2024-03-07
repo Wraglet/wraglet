@@ -1,8 +1,7 @@
 import {
   AuthorInterface,
-  CommentInterface,
-  PostVoteInterface,
-  ReactionInterface
+  PostReactionInterface,
+  PostVoteInterface
 } from '@/interfaces';
 import mongoose, { Document, Schema } from 'mongoose';
 
@@ -19,10 +18,7 @@ export interface PostDocument extends Document {
   };
   audience: string;
   author: AuthorInterface;
-  comments: CommentInterface[]; // Change this to use Types.ObjectId
-  reactions: ReactionInterface[]; // Change this to use Types.ObjectId
-  upvotes: number;
-  downvotes: number;
+  reactions: PostReactionInterface[]; // Change this to use Types.
   votes: PostVoteInterface[]; // Array of PostVote references
   createdAt: Date;
   updatedAt?: Date;
@@ -36,11 +32,22 @@ const PostSchema = new Schema<PostDocument>(
     },
     audience: String,
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction' }],
-    upvotes: { type: Number, default: 0 },
-    downvotes: { type: Number, default: 0 },
-    votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PostVote' }] // Array of PostVote references
+    reactions: [
+      {
+        type: String,
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        createdAt: Date,
+        updatedAt: Date
+      }
+    ],
+    votes: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        voteType: { type: String, enum: ['upvote', 'downvote'] },
+        createdAt: Date,
+        updatedAt: Date
+      }
+    ]
   },
   { timestamps: true }
 );

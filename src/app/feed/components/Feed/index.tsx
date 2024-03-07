@@ -7,7 +7,6 @@ import { useChannel } from 'ably/react';
 
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { PostDocument } from '@/models/Post';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/libs/redux/store';
 import {
@@ -17,7 +16,7 @@ import {
 import { PostInterface } from '@/interfaces';
 
 interface FeedBodyInterface {
-  initialPosts: PostDocument[];
+  initialPosts: PostInterface[];
 }
 
 const FeedBody: FC<FeedBodyInterface> = ({ initialPosts }) => {

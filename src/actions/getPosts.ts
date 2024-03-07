@@ -1,8 +1,5 @@
 import dbConnect from '@/libs/dbConnect';
 import Post from '@/models/Post';
-import Comment from '@/models/Comment';
-import Reaction from '@/models/Reaction';
-import PostVote from '@/models/PostVote';
 
 const getPosts = async () => {
   await dbConnect();
@@ -14,7 +11,6 @@ const getPosts = async () => {
         select:
           'firstName lastName username gender pronoun profilePicture coverPhoto'
       })
-      .populate('comments reactions')
       .exec();
 
     return posts;

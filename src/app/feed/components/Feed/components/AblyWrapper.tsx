@@ -2,16 +2,16 @@
 
 import WragletAblyProvider from '@/providers/WragletAblyProvider';
 import Feed from '..';
-import { PostDocument } from '@/models/Post';
+import { PostInterface } from '@/interfaces';
 
 type Props = {
-  initialPosts: PostDocument[];
+  initialPosts: PostInterface[];
 };
 
 const AblyWrapper = ({ initialPosts }: Props) => {
   return (
     <WragletAblyProvider>
-      <Feed initialPosts={initialPosts!} />
+      <Feed initialPosts={initialPosts} />
     </WragletAblyProvider>
   );
 };

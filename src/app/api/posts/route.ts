@@ -9,8 +9,8 @@ import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3';
 export const POST = async (request: Request) => {
   const s3 = new S3({
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID_PROD || '',
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_PROD || ''
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID_PROD ?? '',
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_PROD ?? ''
     },
 
     region: process.env.AWS_REGION_PROD
@@ -44,7 +44,7 @@ export const POST = async (request: Request) => {
         ContentEncoding: string;
         ContentType: string;
       } = {
-        Bucket: process.env.AWS_S3_BUCKET || '',
+        Bucket: process.env.AWS_S3_BUCKET ?? '',
         Key: key,
         Body: base64Data,
         ACL: 'public-read',

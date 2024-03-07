@@ -10,7 +10,14 @@ import arrGenerator from '@/utils/arrGenerator';
 import { formatDistanceToNow } from 'date-fns';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
-import { FaRegComment, FaRegHeart } from 'react-icons/fa6';
+import {
+  FaRegComment,
+  FaRegHeart,
+  FaRegFaceLaugh,
+  FaRegFaceSadTear,
+  FaRegFaceAngry,
+  FaRegFaceMeh
+} from 'react-icons/fa6';
 import { LuArrowBigUp, LuArrowBigDown } from 'react-icons/lu';
 
 type Props = {
@@ -21,6 +28,23 @@ const Post = ({ post }: Props) => {
   const { user } = useAppSelector((state: RootState) => state.userState);
   const [isOpenComment, setIsOpenComment] = useState(false);
   const content = useRef<HTMLDivElement | null>(null);
+
+  const [showEmojis, setShowEmojis] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  const handlePressStart = () => {
+    timeoutRef.current = window.setTimeout(() => {
+      setShowEmojis(true);
+    }, 500); // Set your desired long press duration
+  };
+
+  const handlePressEnd = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setShowEmojis(false);
+  };
 
   const [height, setHeight] = useState<string>('0px');
 
@@ -37,6 +61,28 @@ const Post = ({ post }: Props) => {
   const toggleComment = () => {
     setIsOpenComment((prev) => !prev);
     setHeight(isOpenComment ? `${content.current?.scrollHeight}px` : '0px');
+  };
+
+  const handleReaction = async (type: string) => {
+    try {
+      const response = await fetch(`/api/posts/${post._id}/react`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ type })
+      });
+
+      if (response.ok) {
+        // You can handle success, e.g., update the UI
+        console.log(`Reaction '${type}' added successfully`);
+      } else {
+        // Handle error
+        console.error('Failed to add reaction:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error adding reaction:', error);
+    }
   };
 
   return (
@@ -76,25 +122,26 @@ const Post = ({ post }: Props) => {
               <p className='text-gray-600 text-xs'>{post.content.text}</p>
             )}
 
-            {post.content.images &&
-              post.content.images.map((image) => (
-                <div
-                  key={image.key}
-                  className='block rounded-md overflow-hidden my-3'
-                >
-                  <Image
-                    src={image.url}
-                    alt='Post Image'
-                    sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-                    width={1}
-                    height={1}
-                    style={{
-                      height: 'auto',
-                      width: '100%'
-                    }}
-                  />
-                </div>
-              ))}
+            {post.content.images
+              ? post.content.images.map((image) => (
+                  <div
+                    key={image.key}
+                    className='block rounded-md overflow-hidden my-3'
+                  >
+                    <Image
+                      src={image.url}
+                      alt='Post Image'
+                      sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                      width={1}
+                      height={1}
+                      style={{
+                        height: 'auto',
+                        width: '100%'
+                      }}
+                    />
+                  </div>
+                ))
+              : null}
           </div>
           <div className='flex justify-between items-center z-10 bg-white'>
             <div className='flex items-center gap-1 border border-solid border-gray-400 rounded-full px-2 py-0.5'>
@@ -108,8 +155,40 @@ const Post = ({ post }: Props) => {
                 onClick={toggleComment}
               />
             </div>
-            <div className='flex items-center gap-1 border border-solid border-gray-400 rounded-full px-2 py-0.5'>
-              <FaRegHeart className='text-xs text-gray-600 cursor-pointer' />
+            <div
+              role='button'
+              tabIndex={0}
+              className='flex items-center gap-1 border border-solid border-gray-400 rounded-full px-2 py-0.5 relative'
+              onTouchStart={handlePressStart}
+              onTouchEnd={handlePressEnd}
+              onMouseDown={handlePressStart}
+              onMouseUp={handlePressEnd}
+              onMouseLeave={handlePressEnd}
+            >
+              <FaRegHeart
+                className='text-xs text-gray-600 cursor-pointer'
+                onClick={() => handleReaction('heart')}
+              />
+              {showEmojis && (
+                <div className='absolute -top-8 bg-white border border-solid border-gray-400 rounded-full p-2 flex gap-1 w-20 -translate-x-9 -translate-y-0.5'>
+                  <FaRegFaceLaugh
+                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
+                    onClick={() => handleReaction('laugh')}
+                  />
+                  <FaRegFaceSadTear
+                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
+                    onClick={() => handleReaction('sad')}
+                  />
+                  <FaRegFaceMeh
+                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
+                    onClick={() => handleReaction('meh')}
+                  />
+                  <FaRegFaceAngry
+                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
+                    onClick={() => handleReaction('angry')}
+                  />
+                </div>
+              )}
             </div>
             <div className='flex items-center gap-1 border border-solid border-gray-400 rounded-full px-2 py-0.5'>
               <ShareIcon className='text-xs text-gray-600 cursor-pointer' />
