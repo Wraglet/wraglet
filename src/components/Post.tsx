@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import Avatar from '@/components/Avatar';
-import Button from '@/components/Button';
-import { ShareIcon } from '@/components/Icons';
-import { PostInterface } from '@/interfaces';
-import { useAppSelector } from '@/libs/redux/hooks';
-import { RootState } from '@/libs/redux/store';
-import arrGenerator from '@/utils/arrGenerator';
-import { formatDistanceToNow } from 'date-fns';
-import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
+import Avatar from '@/components/Avatar'
+import Button from '@/components/Button'
+import { ShareIcon } from '@/components/Icons'
+import { PostInterface } from '@/interfaces'
+import { useAppSelector } from '@/libs/redux/hooks'
+import { RootState } from '@/libs/redux/store'
+import arrGenerator from '@/utils/arrGenerator'
+import { formatDistanceToNow } from 'date-fns'
+import Image from 'next/image'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   FaRegComment,
   FaRegHeart,
@@ -17,51 +17,109 @@ import {
   FaRegFaceSadTear,
   FaRegFaceAngry,
   FaRegFaceMeh
-} from 'react-icons/fa6';
-import { LuArrowBigUp, LuArrowBigDown } from 'react-icons/lu';
+} from 'react-icons/fa6'
+import { LuArrowBigUp, LuArrowBigDown } from 'react-icons/lu'
 
 type Props = {
-  post: PostInterface;
-};
+  post: PostInterface
+}
 
 const Post = ({ post }: Props) => {
-  const { user } = useAppSelector((state: RootState) => state.userState);
-  const [isOpenComment, setIsOpenComment] = useState(false);
-  const content = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    import('@lottiefiles/lottie-player')
+  })
+  const { user } = useAppSelector((state: RootState) => state.userState)
+  const [isOpenComment, setIsOpenComment] = useState(false)
+  const content = useRef<HTMLDivElement | null>(null)
 
-  const [showEmojis, setShowEmojis] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
+  const [showEmojis, setShowEmojis] = useState(false)
+  const timeoutRef = useRef<number | null>(null)
+  const emojisTimeout = useRef<number | null>(null)
+  const emojisRef = useRef<HTMLDivElement | null>(null)
+
+  const reactions = [
+    {
+      name: 'like',
+      ref: useRef(null)
+    },
+    {
+      name: 'love',
+      ref: useRef(null)
+    },
+    {
+      name: 'haha',
+      ref: useRef(null)
+    },
+    {
+      name: 'wow',
+      ref: useRef(null)
+    },
+    {
+      name: 'sad',
+      ref: useRef(null)
+    },
+    {
+      name: 'angry',
+      ref: useRef(null)
+    }
+  ]
 
   const handlePressStart = () => {
     timeoutRef.current = window.setTimeout(() => {
-      setShowEmojis(true);
-    }, 500); // Set your desired long press duration
-  };
+      setShowEmojis(true)
+    }, 500) // Set your desired long press duration
+  }
 
   const handlePressEnd = () => {
     if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
     }
-    setShowEmojis(false);
-  };
+    setShowEmojis(false)
+  }
 
-  const [height, setHeight] = useState<string>('0px');
+  const [height, setHeight] = useState<string>('0px')
 
   useEffect(() => {
     if (isOpenComment) {
-      setHeight(`${content.current?.scrollHeight}px`);
+      setHeight(`${content.current?.scrollHeight}px`)
     }
 
     if (!isOpenComment) {
-      setHeight('0px');
+      setHeight('0px')
     }
-  }, [isOpenComment]);
+  }, [isOpenComment])
 
   const toggleComment = () => {
-    setIsOpenComment((prev) => !prev);
-    setHeight(isOpenComment ? `${content.current?.scrollHeight}px` : '0px');
-  };
+    setIsOpenComment((prev) => !prev)
+    setHeight(isOpenComment ? `${content.current?.scrollHeight}px` : '0px')
+  }
+
+  const handleHoverStart = () => {
+    emojisTimeout.current = window.setTimeout(() => {
+      setShowEmojis(true)
+    }, 200) // Delay for showing emojis on hover
+  }
+
+  const handleHoverEnd = () => {
+    if (emojisTimeout.current) {
+      clearTimeout(emojisTimeout.current)
+      emojisTimeout.current = null
+    }
+    setShowEmojis(false)
+  }
+
+  const handleEmojiHoverStart = () => {
+    if (emojisTimeout.current) {
+      clearTimeout(emojisTimeout.current)
+      emojisTimeout.current = null
+    }
+    setShowEmojis(true)
+  }
+
+  const handleEmojiHoverEnd = () => {
+    setShowEmojis(false)
+  }
 
   const handleReaction = async (type: string) => {
     try {
@@ -71,19 +129,19 @@ const Post = ({ post }: Props) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ type })
-      });
+      })
 
       if (response.ok) {
         // You can handle success, e.g., update the UI
-        console.log(`Reaction '${type}' added successfully`);
+        console.log(`Reaction '${type}' added successfully`)
       } else {
         // Handle error
-        console.error('Failed to add reaction:', response.statusText);
+        console.error('Failed to add reaction:', response.statusText)
       }
     } catch (error) {
-      console.error('Error adding reaction:', error);
+      console.error('Error adding reaction:', error)
     }
-  };
+  }
 
   return (
     <div className='flex w-full'>
@@ -159,34 +217,35 @@ const Post = ({ post }: Props) => {
               role='button'
               tabIndex={0}
               className='flex items-center gap-1 border border-solid border-gray-400 rounded-full px-2 py-0.5 relative'
-              onTouchStart={handlePressStart}
-              onTouchEnd={handlePressEnd}
-              onMouseDown={handlePressStart}
-              onMouseUp={handlePressEnd}
-              onMouseLeave={handlePressEnd}
+              onMouseEnter={handleHoverStart}
+              onMouseLeave={handleHoverEnd}
             >
               <FaRegHeart
                 className='text-xs text-gray-600 cursor-pointer'
                 onClick={() => handleReaction('heart')}
               />
               {showEmojis && (
-                <div className='absolute -top-8 bg-white border border-solid border-gray-400 rounded-full p-2 flex gap-1 w-20 -translate-x-9 -translate-y-0.5'>
-                  <FaRegFaceLaugh
-                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
-                    onClick={() => handleReaction('laugh')}
-                  />
-                  <FaRegFaceSadTear
-                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
-                    onClick={() => handleReaction('sad')}
-                  />
-                  <FaRegFaceMeh
-                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
-                    onClick={() => handleReaction('meh')}
-                  />
-                  <FaRegFaceAngry
-                    className='text-xs text-gray-600 cursor-pointer animate-bounce'
-                    onClick={() => handleReaction('angry')}
-                  />
+                <div
+                  onMouseEnter={handleEmojiHoverStart}
+                  onMouseLeave={handleEmojiHoverEnd}
+                  ref={emojisRef}
+                  className='absolute -top-8 bg-white border border-solid border-gray-400 rounded-full p-2 flex gap-1 w-fit px-2 py-0.5 -translate-x-9 -translate-y-0.5'
+                >
+                  {reactions.map((reaction) => (
+                    <lottie-player
+                      key={reaction.name}
+                      id={reaction.name}
+                      ref={reaction.ref}
+                      autoplay
+                      loop
+                      mode='normal'
+                      src={`/lottie/${reaction.name}.json`}
+                      onClick={() => handleReaction(reaction.name)}
+                      onMouseEnter={handleEmojiHoverStart}
+                      onMouseLeave={handleEmojiHoverEnd}
+                      style={{ width: '24px', height: '24px' }}
+                    />
+                  ))}
                 </div>
               )}
             </div>
@@ -225,7 +284,7 @@ const Post = ({ post }: Props) => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Post;
+export default Post
