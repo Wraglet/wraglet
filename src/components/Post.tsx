@@ -3,22 +3,17 @@
 import Avatar from '@/components/Avatar'
 import Button from '@/components/Button'
 import { ShareIcon } from '@/components/Icons'
-import { PostInterface } from '@/interfaces'
+import { PostInterface, PostReactionInterface } from '@/interfaces'
 import { useAppSelector } from '@/libs/redux/hooks'
 import { RootState } from '@/libs/redux/store'
 import arrGenerator from '@/utils/arrGenerator'
+import deJSONify from '@/utils/deJSONify'
 import { formatDistanceToNow } from 'date-fns'
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  FaRegComment,
-  FaRegHeart,
-  FaRegFaceLaugh,
-  FaRegFaceSadTear,
-  FaRegFaceAngry,
-  FaRegFaceMeh
-} from 'react-icons/fa6'
+import { FaRegComment, FaRegHeart } from 'react-icons/fa6'
 import { LuArrowBigUp, LuArrowBigDown } from 'react-icons/lu'
+import ReactionIcon from './ReactionIcon'
 
 type Props = {
   post: PostInterface
@@ -64,11 +59,15 @@ const Post = ({ post }: Props) => {
     }
   ]
 
+  const postReactions: PostReactionInterface[] = deJSONify(post.reactions)
+
   const handlePressStart = () => {
     timeoutRef.current = window.setTimeout(() => {
       setShowEmojis(true)
     }, 500) // Set your desired long press duration
   }
+
+  console.log('postReactions: ', postReactions)
 
   const handlePressEnd = () => {
     if (timeoutRef.current) {
@@ -220,10 +219,29 @@ const Post = ({ post }: Props) => {
               onMouseEnter={handleHoverStart}
               onMouseLeave={handleHoverEnd}
             >
+              {postReactions.find(
+                (reaction) => reaction.userId._id === user?._id
+              ) ? (
+                <ReactionIcon
+                  type={
+                    postReactions.find(
+                      (reaction) => reaction.userId._id === user?._id
+                    )!.type
+                  }
+                  onClick={() => handleReaction('heart')}
+                />
+              ) : (
+                <FaRegHeart
+                  className='text-xs text-gray-600 cursor-pointer'
+                  onClick={() => handleReaction('heart')}
+                />
+              )}
+
               <FaRegHeart
                 className='text-xs text-gray-600 cursor-pointer'
                 onClick={() => handleReaction('heart')}
               />
+
               {showEmojis && (
                 <div
                   onMouseEnter={handleEmojiHoverStart}
@@ -241,8 +259,6 @@ const Post = ({ post }: Props) => {
                       mode='normal'
                       src={`/lottie/${reaction.name}.json`}
                       onClick={() => handleReaction(reaction.name)}
-                      onMouseEnter={handleEmojiHoverStart}
-                      onMouseLeave={handleEmojiHoverEnd}
                       style={{ width: '24px', height: '24px' }}
                     />
                   ))}

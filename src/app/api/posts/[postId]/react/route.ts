@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/libs/dbConnect';
 import getCurrentUser from '@/actions/getCurrentUser';
-import Post, { PostDocument } from '@/models/Post';
+import Post from '@/models/Post';
+import PostReaction from '@/models/PostReaction'
 
 interface IParams {
   postId: string;
@@ -23,37 +24,40 @@ export const PATCH = async (
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Check if the user has already reacted
-    const existingReaction = await Post.findOne({
-      _id: postId,
-      'reactions.userId': currentUser._id
+    // Check if the user has already reacted to the post
+    const existingReaction = await PostReaction.findOne({
+      postId: postId,
+      userId: currentUser._id
     });
 
     if (existingReaction) {
+      console.error('User has already reacted to this post');
       return new NextResponse('User has already reacted to this post', {
         status: 400
       });
     }
 
-    // Update the post with the new reaction
+    const reaction = new PostReaction({
+      postId: postId,
+      type,
+      userId: currentUser._id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    await reaction.save();
+
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
-      {
-        $push: {
-          reactions: {
-            type,
-            userId: currentUser._id,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        }
-      },
-      { new: true } // Return the updated document
+      { $push: { reactions: reaction._id } },
+      { new: true }
     );
 
     if (!updatedPost) {
       return new NextResponse('Post not found', { status: 404 });
     }
+
+    console.log(`Reaction '${type}' added successfully`);
 
     return new NextResponse('Reaction added successfully', { status: 200 });
   } catch (err: any) {

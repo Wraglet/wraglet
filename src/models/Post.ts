@@ -4,6 +4,7 @@ import {
   PostVoteInterface
 } from '@/interfaces';
 import mongoose, { Document, Schema } from 'mongoose';
+import { PostReactionDocument } from './PostReaction'
 
 export interface PostDocument extends Document {
   _id: string;
@@ -32,14 +33,7 @@ const PostSchema = new Schema<PostDocument>(
     },
     audience: String,
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    reactions: [
-      {
-        type: String,
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        createdAt: Date,
-        updatedAt: Date
-      }
-    ],
+    reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction' }],
     votes: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

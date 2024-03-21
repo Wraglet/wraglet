@@ -1,3 +1,4 @@
+
 export interface PostInterface {
   _id: string;
   content: {
@@ -18,10 +19,12 @@ export interface PostInterface {
 }
 
 export interface PostReactionInterface {
+  _id: string; // Assuming _id is also a string
   type: string;
-  userId: string;
+  postId: string; // Adjust the type to string if it's supposed to be a string
+  userId: AuthorInterface; // Adjust the type to string if it's supposed to be a string
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt: Date;
 }
 
 export interface UserInterface {
@@ -52,6 +55,7 @@ export interface UserInterface {
 }
 
 export interface AuthorInterface {
+  _id: string
   firstName: string;
   lastName: string;
   username: string;
