@@ -1,8 +1,6 @@
-'use server'
+import { Document, model, Model, models, Schema, Types } from 'mongoose'
 
-import mongoose, { Document, Schema } from 'mongoose'
-
-export interface UserDocument extends Document {
+export interface IUser {
   firstName: string
   lastName: string
   suffix?: string
@@ -25,27 +23,30 @@ export interface UserDocument extends Document {
   friendRequests: string
   followers: [
     {
-      userId: string
+      userId: Types.ObjectId
       createdAt: Date
     }
   ]
   following: [
     {
-      userId: string
-
+      userId: Types.ObjectId
       createdAt: Date
     }
   ]
   friends: [
     {
-      userId: string
+      userId: Types.ObjectId
       relationship: string
       createdAt: Date
     }
   ]
+  phoneNumber?: string // Example additional property
+  address?: string // Example additional property
 }
 
-const UserSchema = new Schema<UserDocument>(
+export interface IUserDoc extends IUser, Document {}
+
+const UserSchema = new Schema<IUser>(
   {
     firstName: String,
     lastName: String,
@@ -63,26 +64,28 @@ const UserSchema = new Schema<UserDocument>(
     friendRequests: String,
     followers: [
       {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+        userId: { type: Schema.Types.ObjectId, ref: 'User' },
+        createdAt: { type: Date, default: Date.now }
       }
     ],
     following: [
       {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+        userId: { type: Schema.Types.ObjectId, ref: 'User' },
+        createdAt: { type: Date, default: Date.now }
       }
     ],
     friends: [
       {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        userId: { type: Schema.Types.ObjectId, ref: 'User' },
         relationship: String
       }
-    ]
+    ],
+    phoneNumber: String, // Example additional property
+    address: String // Example additional property
   },
   { timestamps: true }
 )
 
-const User =
-  (mongoose.models.User as mongoose.Model<UserDocument>) ||
-  mongoose.model<UserDocument>('User', UserSchema)
+const User = (models.User as Model<IUser>) || model<IUser>('User', UserSchema)
 
 export default User
