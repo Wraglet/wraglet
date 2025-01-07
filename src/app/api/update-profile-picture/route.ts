@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import getCurrentUser from '@/actions/getCurrentUser'
-import User, { UserDocument } from '@/models/User'
+import User, { IUserDoc } from '@/database/user.model'
+import dbConnect from '@/lib/db'
 import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 import { v4 as uuidv4 } from 'uuid'
-import client from '@/lib/db'
 
 export const PATCH = async (request: Request) => {
   const s3 = new S3({
@@ -17,7 +17,7 @@ export const PATCH = async (request: Request) => {
   })
 
   try {
-    await client()
+    await dbConnect()
 
     const body = await request.json()
     const currentUser = await getCurrentUser()
@@ -72,7 +72,7 @@ export const PATCH = async (request: Request) => {
       currentUser?._id,
       { $set: { profilePicture: { url: data.Location, key } } },
       { new: true }
-    )) as UserDocument
+    )) as IUserDoc
 
     return NextResponse.json(updatedUser)
   } catch (err) {

@@ -1,15 +1,13 @@
 'use server'
 
-import client from '@/lib/db'
-import Post, { PostDocument } from '@/models/Post'
-import User from '@/models/User'
+import Post, { IPostDoc } from '@/database/post.model'
+import User from '@/database/user.model'
+import dbConnect from '@/lib/db'
 
-const getPostsByUsername = async (
-  username: string
-): Promise<PostDocument[]> => {
+const getPostsByUsername = async (username: string): Promise<IPostDoc[]> => {
   try {
     // Connect to the database
-    await client()
+    await dbConnect()
 
     // Find the user by username
     const user = await User.findOne({ username })
@@ -30,7 +28,10 @@ const getPostsByUsername = async (
       })
       .exec()
 
-    return userPosts // Return the fetched posts
+    // Parse and stringify the posts to ensure JSON compatibility
+    const parsedPosts = JSON.parse(JSON.stringify(userPosts))
+
+    return parsedPosts // Return the parsed posts
   } catch (error) {
     console.error(`Error at getPostsByUsername(${username}): `, error)
     return [] // Return an empty array on error

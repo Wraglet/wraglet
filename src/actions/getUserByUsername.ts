@@ -1,13 +1,12 @@
 'use server'
 
 import getSession from '@/actions/getSession'
-import client from '@/lib/db'
-import User from '@/models/User'
-import mongoose from 'mongoose'
+import User from '@/database/user.model'
+import dbConnect from '@/lib/db'
 
 const getUserByUsername = async (username: string) => {
   try {
-    await client()
+    await dbConnect()
 
     const session = await getSession()
 
@@ -28,9 +27,6 @@ const getUserByUsername = async (username: string) => {
     // Convert the user document to a plain object and handle ObjectId
     if (user) {
       const userObject = user.toObject()
-      if (userObject._id instanceof mongoose.Types.ObjectId) {
-        userObject._id = userObject._id.toString()
-      }
       return { ...userObject, isCurrentUser }
     }
 

@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import User from '@/database/user.model'
-import client from '@/lib/db'
+import dbConnect from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -13,7 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         try {
-          await client()
+          await dbConnect()
           console.log('Connected to MongoDB')
 
           const user = await User.findOne({

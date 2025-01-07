@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import client from '@/lib/db'
+import User from '@/database/user.model'
+import dbConnect from '@/lib/db'
 import { generateUsername } from '@/lib/utils'
-import User from '@/models/User'
 import bcrypt from 'bcryptjs'
 
 export const POST = async (request: Request) => {
   try {
-    await client()
+    await dbConnect()
 
     const body = await request.json()
     const {
