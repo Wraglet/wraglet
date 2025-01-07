@@ -1,4 +1,4 @@
-import { Document, Model, model, models, Schema, Types } from 'mongoose'
+import { Document, model, models, Schema, Types } from 'mongoose'
 
 export interface IPostVote {
   userId: Types.ObjectId
@@ -18,7 +18,6 @@ const PostVoteSchema = new Schema<IPostVote>(
 )
 
 const PostVote =
-  (models.PostVote as Model<IPostVote>) ||
-  model<IPostVote>('PostVote', PostVoteSchema)
+  models?.PostVote || model<IPostVote>('PostVote', PostVoteSchema)
 
 export default PostVote

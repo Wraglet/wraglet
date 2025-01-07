@@ -1,4 +1,4 @@
-import { Document, Model, model, models, Schema, Types } from 'mongoose'
+import { Document, model, models, Schema, Types } from 'mongoose'
 
 export interface IFriendship {
   userId: Types.ObjectId
@@ -24,7 +24,6 @@ const FriendshipSchema = new Schema<IFriendship>(
 )
 
 const Friendship =
-  (models.Friendship as Model<IFriendship>) ||
-  model<IFriendship>('Friendship', FriendshipSchema)
+  models?.Friendship || model<IFriendship>('Friendship', FriendshipSchema)
 
 export default Friendship

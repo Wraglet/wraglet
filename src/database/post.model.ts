@@ -1,6 +1,6 @@
 import { IPostReactionDoc } from '@/database/post-reaction.model'
 import { AuthorInterface } from '@/interfaces'
-import { Document, Model, model, models, Schema, Types } from 'mongoose'
+import { Document, model, models, Schema, Types } from 'mongoose'
 
 export interface IPost {
   content: {
@@ -34,6 +34,6 @@ const PostSchema = new Schema<IPost>(
   { timestamps: true }
 )
 
-const Post = (models.Post as Model<IPost>) || model<IPost>('Post', PostSchema)
+const Post = models?.Post || model<IPost>('Post', PostSchema)
 
 export default Post

@@ -1,4 +1,4 @@
-import { Document, Model, model, models, Schema, Types } from 'mongoose'
+import { Document, model, models, Schema, Types } from 'mongoose'
 
 enum ReactionType {
   Like = 'like',
@@ -26,7 +26,6 @@ const ReactionSchema = new Schema<IReaction>(
 )
 
 const Reaction =
-  (models.Reaction as Model<IReaction>) ||
-  model<IReaction>('Reaction', ReactionSchema)
+  models?.Reaction || model<IReaction>('Reaction', ReactionSchema)
 
 export default Reaction

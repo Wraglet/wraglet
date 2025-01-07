@@ -1,4 +1,4 @@
-import { Document, Model, model, models, Schema, Types } from 'mongoose'
+import { Document, model, models, Schema, Types } from 'mongoose'
 
 export interface IComment {
   content: string
@@ -19,8 +19,6 @@ const CommentSchema = new Schema<IComment>(
   { timestamps: true }
 )
 
-const Comment =
-  (models.Comment as Model<IComment>) ||
-  model<IComment>('Comment', CommentSchema)
+const Comment = models?.Comment || model<IComment>('Comment', CommentSchema)
 
 export default Comment

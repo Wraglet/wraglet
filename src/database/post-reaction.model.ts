@@ -1,4 +1,4 @@
-import { Document, Model, model, models, Schema, Types } from 'mongoose'
+import { Document, model, models, Schema, Types } from 'mongoose'
 
 enum ReactionType {
   HEART = 'heart',
@@ -26,7 +26,7 @@ const PostReactionSchema = new Schema<IPostReaction>(
 )
 
 const PostReaction =
-  (models.PostReaction as Model<IPostReaction>) ||
+  models?.PostReaction ||
   model<IPostReaction>('PostReaction', PostReactionSchema)
 
 export default PostReaction
