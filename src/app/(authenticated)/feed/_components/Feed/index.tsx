@@ -1,8 +1,7 @@
 'use client'
 
 import { FC, FormEvent, useEffect, useReducer } from 'react'
-import { PostInterface } from '@/interfaces'
-import { PostDocument } from '@/models/Post'
+import { IPostDoc } from '@/database/post.model'
 import useFeedPostsStore from '@/store/feedPosts'
 import { useChannel } from 'ably/react'
 import axios from 'axios'
@@ -12,7 +11,7 @@ import CreatePost from '@/components/CreatePost'
 import Post from '@/components/Post'
 
 interface FeedBodyInterface {
-  initialPosts: PostDocument[]
+  initialPosts: IPostDoc[]
 }
 
 const FeedBody: FC<FeedBodyInterface> = ({ initialPosts }) => {
@@ -25,7 +24,7 @@ const FeedBody: FC<FeedBodyInterface> = ({ initialPosts }) => {
 
   useEffect(() => {
     if (!isFeedPostsInitialized) {
-      setFeedPosts(initialPosts as unknown as PostInterface[])
+      setFeedPosts(initialPosts)
       setIsFeedPostsInitialized(true)
     }
   }, [
@@ -81,8 +80,8 @@ const FeedBody: FC<FeedBodyInterface> = ({ initialPosts }) => {
           postImage={image}
           setPostImage={(image) => dispatchState({ image: image })}
         />
-        {posts.map((post: PostInterface) => (
-          <Post key={post._id} post={post as unknown as PostDocument} />
+        {posts.map((post: IPostDoc) => (
+          <Post key={post._id?.toString()} post={post} />
         ))}
       </div>
     </section>

@@ -30,7 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             if (isPasswordCorrect) {
               return {
-                id: user._id.toString(),
+                id: user._id,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,

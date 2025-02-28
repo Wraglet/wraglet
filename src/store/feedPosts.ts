@@ -1,10 +1,10 @@
-import { PostInterface } from '@/interfaces'
+import { IPostDoc } from '@/database/post.model'
 import { create } from 'zustand'
 
 type FeedPostsProps = {
-  posts: PostInterface[]
+  posts: IPostDoc[]
   isFeedPostsInitialized: boolean
-  setFeedPosts: (posts: PostInterface[]) => void
+  setFeedPosts: (posts: IPostDoc[]) => void
   setIsFeedPostsInitialized: (initialized: boolean) => void
   clearFeedPosts: () => void
 }

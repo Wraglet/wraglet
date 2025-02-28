@@ -3,7 +3,7 @@
 import { FormEvent, Suspense, useReducer, useState } from 'react'
 import getPostsByUsername from '@/actions/getPostsByUsername'
 import getUserByUsername from '@/actions/getUserByUsername'
-import { PostDocument } from '@/models/Post'
+import { IPostDoc } from '@/database/post.model'
 import useFeedPostsStore from '@/store/feedPosts'
 import { useQuery } from '@tanstack/react-query'
 import { useChannel } from 'ably/react'
@@ -15,7 +15,7 @@ import Post from '@/components/Post'
 
 type ProfileBodyProps = {
   username: string
-  initialPosts: PostDocument[]
+  initialPosts: IPostDoc[]
 }
 
 const ProfileBody = ({ username, initialPosts }: ProfileBodyProps) => {
@@ -96,11 +96,8 @@ const ProfileBody = ({ username, initialPosts }: ProfileBodyProps) => {
         {isPending && <div>Loading...</div>}
         {userPosts &&
           !isPending &&
-          userPosts.map((post: PostDocument) => (
-            <Post
-              key={post._id as string}
-              post={post as unknown as PostDocument}
-            />
+          userPosts.map((post: IPostDoc) => (
+            <Post key={post._id as string} post={post} />
           ))}
       </div>
     </div>

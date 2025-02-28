@@ -1,3 +1,5 @@
+'use server'
+
 import logger from '@/lib/logger'
 import mongoose, { Mongoose } from 'mongoose'
 
