@@ -1,3 +1,5 @@
+'use server'
+
 import { IPostReactionDoc } from '@/database/post-reaction.model'
 import { AuthorInterface } from '@/interfaces'
 import { Document, model, models, Schema, Types } from 'mongoose'
