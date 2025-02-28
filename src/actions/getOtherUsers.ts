@@ -1,9 +1,8 @@
 'use server'
 
 import getSession from '@/actions/getSession'
-import client from '@/lib/db'
-import User from '@/models/User'
-import mongoose from 'mongoose'
+import User from '@/database/user.model'
+import dbConnect from '@/lib/db'
 
 const getOtherUsers = async () => {
   const session = await getSession().catch((err) => {
@@ -18,7 +17,7 @@ const getOtherUsers = async () => {
   }
 
   try {
-    await client()
+    await dbConnect()
 
     const users = await User.find({
       email: { $ne: session.user.email }
@@ -30,9 +29,6 @@ const getOtherUsers = async () => {
     // Convert each user document to a plain object and convert ObjectId to string
     const plainUsers = users.map((user) => {
       const userObject = user.toObject()
-      if (userObject._id instanceof mongoose.Types.ObjectId) {
-        userObject._id = userObject._id.toString()
-      }
       return userObject
     })
 

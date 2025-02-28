@@ -1,4 +1,4 @@
-import React, {
+import {
   CSSProperties,
   FC,
   Fragment,
@@ -11,6 +11,7 @@ import React, {
   useState
 } from 'react'
 import Image from 'next/image'
+import { MAX_FILE_SIZE } from '@/constants'
 import getCroppedImg from '@/lib/getCroppedImg'
 import {
   Dialog,
@@ -22,7 +23,6 @@ import { useDropzone } from 'react-dropzone'
 import Cropper from 'react-easy-crop'
 import { FaCrop } from 'react-icons/fa6'
 
-import { MAX_FILE_SIZE } from '@/data/constants'
 import CrossWhite from '@/components/CrossWhite'
 import ThreeCardsImage from '@/components/ThreeCardsImage'
 import { Skeleton } from '@/components/ui/skeleton'

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import getCurrentUser from '@/actions/getCurrentUser'
-import Post from '@/models/Post'
+import Post from '@/database/post.model'
+import dbConnect from '@/lib/db'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
-import client from '@/lib/db'
 
 export const POST = async (request: Request) => {
   const s3Client = new S3Client({
@@ -16,7 +16,7 @@ export const POST = async (request: Request) => {
   })
 
   try {
-    await client()
+    await dbConnect()
 
     const currentUser = await getCurrentUser()
     const body = await request.json()

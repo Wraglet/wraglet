@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { PostDocument } from '@/models/Post'
+import { IPostDoc } from '@/database/post.model'
 import useUserStore from '@/store/user'
 import arrGenerator from '@/utils/arrGenerator'
 import { formatDistanceToNow } from 'date-fns'
@@ -15,22 +15,10 @@ import ReactionIcon from '@/components/ReactionIcon'
 import { Button } from '@/components/ui/button'
 
 type Props = {
-  post: PostDocument
+  post: IPostDoc
 }
 
 const Post = ({ post }: Props) => {
-  useEffect(() => {
-    import('@lottiefiles/lottie-player')
-  })
-  const { user } = useUserStore()
-  const [isOpenComment, setIsOpenComment] = useState(false)
-  const content = useRef<HTMLDivElement | null>(null)
-
-  const [showEmojis, setShowEmojis] = useState(false)
-  const timeoutRef = useRef<number | null>(null)
-  const emojisTimeout = useRef<number | null>(null)
-  const emojisRef = useRef<HTMLDivElement | null>(null)
-
   const reactions = [
     {
       name: 'like',
@@ -57,6 +45,17 @@ const Post = ({ post }: Props) => {
       ref: useRef(null)
     }
   ]
+  useEffect(() => {
+    import('@lottiefiles/lottie-player')
+  })
+  const { user } = useUserStore()
+  const [isOpenComment, setIsOpenComment] = useState(false)
+  const content = useRef<HTMLDivElement | null>(null)
+
+  const [showEmojis, setShowEmojis] = useState(false)
+  const timeoutRef = useRef<number | null>(null)
+  const emojisTimeout = useRef<number | null>(null)
+  const emojisRef = useRef<HTMLDivElement | null>(null)
 
   const postReactions = post.reactions
 
@@ -176,26 +175,25 @@ const Post = ({ post }: Props) => {
               <p className="text-xs text-gray-600">{post.content.text}</p>
             )}
 
-            {post.content.images
-              ? post.content.images.map((image) => (
-                  <div
-                    key={image.key}
-                    className="my-3 block overflow-hidden rounded-md"
-                  >
-                    <Image
-                      src={image.url}
-                      alt="Post Image"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      width={1}
-                      height={1}
-                      style={{
-                        height: 'auto',
-                        width: '100%'
-                      }}
-                    />
-                  </div>
-                ))
-              : null}
+            {post.content.images &&
+              post.content.images.map((image: { url: string; key: string }) => (
+                <div
+                  key={image.key}
+                  className="my-3 block overflow-hidden rounded-md"
+                >
+                  <Image
+                    src={image.url}
+                    alt="Post Image"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    width={1}
+                    height={1}
+                    style={{
+                      height: 'auto',
+                      width: '100%'
+                    }}
+                  />
+                </div>
+              ))}
           </div>
           <div className="z-10 flex items-center justify-between bg-white">
             <div className="flex items-center gap-1 rounded-full border border-solid border-gray-400 px-2 py-0.5">
@@ -218,12 +216,14 @@ const Post = ({ post }: Props) => {
             >
               {postReactions &&
               postReactions.find(
-                (reaction) => reaction.userId._id === user?._id
+                (reaction) =>
+                  reaction._id && reaction._id.toString() === user?._id
               ) ? (
                 <ReactionIcon
                   type={
                     postReactions.find(
-                      (reaction) => reaction.userId._id === user?._id
+                      (reaction) =>
+                        reaction._id && reaction._id.toString() === user?._id
                     )!.type
                   }
                   onClick={() => handleReaction('heart')}
@@ -247,19 +247,23 @@ const Post = ({ post }: Props) => {
                   ref={emojisRef}
                   className="absolute -top-8 flex w-fit -translate-x-9 -translate-y-0.5 gap-1 rounded-full border border-solid border-gray-400 bg-white p-2 px-2 py-0.5"
                 >
-                  {reactions.map((reaction) => (
-                    <lottie-player
+                  {/* {reactions.map((reaction) => (
+                    <div
                       key={reaction.name}
-                      id={reaction.name}
-                      ref={reaction.ref}
-                      autoplay
-                      loop
-                      mode="normal"
-                      src={`/lottie/${reaction.name}.json`}
                       onClick={() => handleReaction(reaction.name)}
                       style={{ width: '24px', height: '24px' }}
-                    />
-                  ))}
+                    >
+                      <lottie-player
+                        id={reaction.name}
+                        ref={reaction.ref}
+                        autoplay
+                        loop
+                        mode="normal"
+                        src={`/lottie/${reaction.name}.json`}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                  ))} */}
                 </div>
               )}
             </div>

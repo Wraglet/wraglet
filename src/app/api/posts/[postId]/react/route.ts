@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import getCurrentUser from '@/actions/getCurrentUser'
-import Post from '@/models/Post'
-import PostReaction from '@/models/PostReaction'
-import client from '@/lib/db'
+import PostReaction from '@/database/post-reaction.model'
+import Post from '@/database/post.model'
+import dbConnect from '@/lib/db'
 
 export const PATCH = async (
   request: Request,
@@ -13,7 +13,7 @@ export const PATCH = async (
   }
 ) => {
   try {
-    await client()
+    await dbConnect()
 
     const currentUser = await getCurrentUser()
     const body = await request.json()

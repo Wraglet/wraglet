@@ -1,14 +1,14 @@
 'use server'
 
-import client from '@/lib/db'
-import Post, { PostDocument } from '@/models/Post'
+import Post, { IPostDoc } from '@/database/post.model'
+import dbConnect from '@/lib/db'
 
 // Import PostDocument for type safety
 
-const getPosts = async (): Promise<PostDocument[]> => {
+const getPosts = async (): Promise<IPostDoc[]> => {
   try {
     // Connect to the database
-    await client()
+    await dbConnect()
 
     // Fetch posts with audience 'public', sorted by creation date
     const posts = await Post.find({ audience: 'public' })
@@ -20,7 +20,10 @@ const getPosts = async (): Promise<PostDocument[]> => {
       })
       .exec()
 
-    return posts // Return the fetched posts
+    // Parse and stringify the posts to ensure JSON compatibility
+    const parsedPosts = JSON.parse(JSON.stringify(posts))
+
+    return parsedPosts as IPostDoc[] // Return the parsed posts
   } catch (error) {
     console.error('Error at getPosts() while fetching posts: ', error)
     return [] // Return an empty array on error
